@@ -1,4 +1,4 @@
-# vim:ft=zsh ts=2 sw=2 sts=2
+# vim:ft=zsh ts=2 sw=2 sts=2 -*- sh -*-
 #
 # agnoster's Theme - https://gist.github.com/3712874
 # A Powerline-inspired theme for ZSH
@@ -226,3 +226,4 @@ build_prompt() {
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
+RPROMPT='%{%F{yellow}%}$(date +%Y-%m-%d\ %H:%M:%S)'
