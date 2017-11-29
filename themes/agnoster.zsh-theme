@@ -86,6 +86,7 @@ prompt_context() {
 
 # Git: branch/detached head, dirty status
 prompt_git() {
+
   (( $+commands[git] )) || return
   local PL_BRANCH_CHAR
   () {
@@ -94,6 +95,11 @@ prompt_git() {
   }
   local ref dirty mode repo_path
   repo_path=$(git rev-parse --git-dir 2>/dev/null)
+  if [[ -f "$repo_path/../.no-oh-my-zsh-git" ]]; then
+      prompt_segment red black
+      echo -n "git"      
+      return
+  fi
 
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
     dirty=$(parse_git_dirty)
@@ -205,11 +211,16 @@ prompt_virtualenv() {
 prompt_status() {
   local symbols
   symbols=()
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
+  # [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
-
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
+}
+
+prompt_error() {
+  local symbols
+  symbols=()
+  [[ $RETVAL -ne 0 ]] && echo -n " %{%F{red}%}✘%{%k%}%{%f%}"
 }
 
 ## Main prompt
@@ -223,6 +234,7 @@ build_prompt() {
   prompt_bzr
   prompt_hg
   prompt_end
+  prompt_error
 }
 
 PROMPT='%{%f%b%k%}$(build_prompt) '
